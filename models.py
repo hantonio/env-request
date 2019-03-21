@@ -79,8 +79,8 @@ class Environment(db.Model):
 		return "{}".format(self.id)
 
 	def __str__(self):
-		#return "{} {}".format(self.phase, self.number)
-		return "{}".format(self.id)
+		return "{} {}".format(self.phase, self.number)
+		#return "{}".format(self.id)
 
 admin.add_view(ModelView(Environment, db.session))
 
