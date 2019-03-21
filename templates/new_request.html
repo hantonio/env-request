@@ -2,19 +2,29 @@
 
 {% block title %}New Request - Environment Request{% endblock %}
 
+{% block head %}
+{{ super() }}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+{% endblock %}
+
 {% block content %}
 <div class="container">
 <h2>New Request</h2>
 
-{% from "_formhelpers.html" import render_field %}
+{% from "_formhelpers.html" import render_field, render_datefield %}
 <form method=post>
 	<dl>
 		{{ render_field(form.environment) }}
 		{{ render_field(form.requestedby) }}
 		{{ render_field(form.version) }}
 		{{ render_field(form.swp_number) }}
-        {{ render_field(form.start_date, type='datetime-local') }}
-		{{ render_field(form.delivery_date, type='datetime-local') }}
+    {{ render_datefield(form.start_date, 'datetimepicker1') }}
+    <p>*Minimum tolerance of 24 hours between start and delivery date.</p>
+		{{ render_datefield(form.delivery_date, 'datetimepicker2') }}
 		{{ render_field(form.backup_db) }}
 		{{ render_field(form.keep_data) }}
 		{{ render_field(form.keep_ld) }}						
@@ -30,7 +40,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+
 <script>
 jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
   return this.each(function() {
@@ -64,4 +74,4 @@ $(function() {
   $('#selectswp').filterByText($('#versionbox'), true);
 }); 
 </script>
-{% endblock%}
+{% endblock %}

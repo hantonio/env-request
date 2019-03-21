@@ -1,6 +1,7 @@
 {% macro render_field(field) %}
-	<dt>{{ field.label }}
-	<dd>{{ field(**kwargs)|safe }}
+<div class="form-group">
+	<label>{{ field.label }}</label>
+	{{ field(**kwargs)|safe }}
 	{% if field.errors %}
 		<ul class=errors>
 			{% for error in field.errors %}
@@ -9,4 +10,31 @@
 		</ul>
 	{% endif %}
 	</dd>
+</div>
+{% endmacro %}
+
+{% macro render_datefield(field, id) %}
+<div class="form-group">
+{{ field.label }}
+<div class='input-group date' id={{ id|safe }}>
+{{ field(**kwargs)|safe }}
+<span class="input-group-addon">
+<span class="glyphicon glyphicon-calendar"></span>
+</span>
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#datetimepicker1').datetimepicker(
+        	{ minDate:new Date() }
+        	);
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#datetimepicker2').datetimepicker(
+        	{ minDate:new Date() }
+        	);
+    });
+</script>
 {% endmacro %}
