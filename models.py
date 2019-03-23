@@ -92,10 +92,10 @@ class OsbIntegration(db.Model):
 	osbstack_ip = db.Column(db.String(20))
 
 	def __repr__(self):
-		return "{}".format(self.id)
+		return "{}".format(self.osbstack)
 
 	def __str__(self):
-		return "{}".format(self.osbstack)
+		return "{}".format(self.id)
 
 admin.add_view(ModelView(OsbIntegration, db.session))
 
@@ -106,10 +106,10 @@ class OdsIntegration(db.Model):
 	odsnumber = db.Column(db.Integer(), unique=True)
 
 	def __repr__(self):
-		return "{}".format(self.id)
+		return "{}".format(self.odsnumber)
 
 	def __str__(self):
-		return "{}".format(self.odsnumber)
+		return "{}".format(self.id)
 
 admin.add_view(ModelView(OdsIntegration, db.session))
 
@@ -122,10 +122,10 @@ class OssIntegration(db.Model):
 	osshost = db.Column(db.String(20))
 
 	def __repr__(self):
-		return "{}".format(self.id)
+		return "{}".format(self.ossnumber)
 
 	def __str__(self):
-		return "{}".format(self.ossnumber)
+		return "{}".format(self.id)
 
 admin.add_view(ModelView(OssIntegration, db.session))
 
@@ -136,7 +136,7 @@ class EnvironmentRequest(db.Model):
 
 	id = db.Column(db.Integer(), primary_key=True)
 	env_id = db.Column(db.Integer(), db.ForeignKey("environment.id"))
-	env = db.relationship("Environment", backref=db.backref("environment"), order_by=id, lazy=False)
+	env = db.relationship("Environment", backref=db.backref("environment"), order_by=id, lazy=True)
 	requestedby = db.Column(db.String(20))
 	approval = db.Column(db.Boolean())
 	status = db.Column(db.String(10))
@@ -149,12 +149,12 @@ class EnvironmentRequest(db.Model):
 	keep_data = db.Column(db.Boolean())
 	keep_ld = db.Column(db.Boolean())
 	osb_id = db.Column(db.Integer(), db.ForeignKey("osb_integration.id"))
-	osb_integration = db.relationship("OsbIntegration", backref=db.backref("osb_integration"), order_by=id, lazy=False)
+	osb_integration = db.relationship("OsbIntegration", backref=db.backref("osb_integration"), order_by=id, post_update=True, lazy='selectin')
 	ods_id = db.Column(db.Integer(), db.ForeignKey("ods_integration.id"))
-	ods_integration = db.relationship("OdsIntegration", backref=db.backref("ods_integration"), order_by=id, lazy=False)
+	ods_integration = db.relationship("OdsIntegration", backref=db.backref("ods_integration"), order_by=id, post_update=True, lazy='selectin')
 	oss_id = db.Column(db.Integer(), db.ForeignKey("oss_integration.id"))	
-	oss_integration = db.relationship("OssIntegration", backref=db.backref("oss_integration"), order_by=id, lazy=False)
-	source_uat_ref = db.Column(db.String(10))
+	oss_integration = db.relationship("OssIntegration", backref=db.backref("oss_integration"), order_by=id, post_update=True, lazy='selectin')
+	source_uat_ref = db.Column(db.String(10), nullable=True)
 	delivery_notification = db.Column(db.String(300))
 
 admin.add_view(ModelView(EnvironmentRequest, db.session))

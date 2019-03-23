@@ -7,9 +7,12 @@ from forms import EnvironmentRequestForm, RequestSearchForm
 from flask import flash, render_template, request, redirect
 from models import User, Role, EnvironmentRequest, Environment
 from tables import Results
+from sqlalchemy.orm.session import make_transient, make_transient_to_detached
 #from flask_sqlalchemy import SQLAlchemy
 #from flask_admin.contrib.sqla import ModelView
 from flask_security import Security, SQLAlchemyUserDatastore, utils, login_required
+from sqlalchemy.orm.base import NEVER_SET
+from sqlalchemy import inspect
 
 init_db()
 
@@ -83,14 +86,73 @@ def search_results(search):
 @app.route('/request/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_req(id):
-    qry = db_session.query(EnvironmentRequest).filter(EnvironmentRequest.id==id)
-    req = qry.first()
+    #with db_session.no_autoflush:
+    req = db_session.query(EnvironmentRequest).filter(EnvironmentRequest.id==id).first()
+    _ = req.env_id
+    _ = req.ods_id
+    _ = req.osb_id
+    _ = req.oss_id
+
+    #current_session=db_session.object_session(req)
+    #current_session.delete(req)
+    #current_session.flush([req])
+
+    db_session.expire(req, ['env'])
+    #make_transient(req)
+    db_session.expire(req, ['ods_integration'])
+    #make_transient(req)
+    db_session.expire(req, ['osb_integration'])
+    #make_transient(req)
+    db_session.expire(req, ['oss_integration'])
+    make_transient(req)
+    make_transient_to_detached(req)
+
+    #db_session.expunge(req)
+    inspect(req).committed_state.update(id=NEVER_SET)
+    inspect(req).committed_state.update(env=NEVER_SET)
+    inspect(req).committed_state.update(osb_integration=NEVER_SET)
+    inspect(req).committed_state.update(ods_integration=NEVER_SET)
+    inspect(req).committed_state.update(oss_integration=NEVER_SET)
 
     if req:
         form = EnvironmentRequestForm(formdata=request.form, obj=req)
         if request.method == 'POST' and form.validate():
             # save edits
-            save_request(req, form)
+            print "saving edits"
+            req.env_id = int(str(form.environment.data).split()[1])
+            req.env = form.environment.data
+            print "after environment"
+            req.requestedby = form.requestedby.data
+            print "after requestedby"
+            req.version = int(str(form.swp_number.data[0]).split()[0])
+            print "after version"
+            req.swp_number = int(str(form.swp_number.data[0]).split()[1])
+            print "after swp"
+            req.start_date = form.start_date.data
+            req.delivery_date = form.delivery_date.data
+            req.backup_db = form.backup_db.data
+            req.keep_data = form.keep_data.data
+            req.keep_ld = form.keep_ld.data
+            req.osb_id = int(str(form.osb_integration.data))
+            req.osb_integration = form.osb_integration.data
+            print "afer osb"
+            req.ods_id = int(str(form.ods_integration.data))
+            req.ods_integration = form.ods_integration.data
+            req.oss_id = int(str(form.oss_integration.data))
+            req.oss_integration = form.oss_integration.data                        
+            req.source_uat_ref = str(form.source_uat_ref.data)
+            req.delivery_notification = form.delivery_notification.data 
+            req.approval = False
+            print "saved edits"
+            current_session=db_session.object_session(req)
+            #current_session.add(req)
+            current_session.commit()
+            #db_session.add(req)
+            #db_session.merge(req)
+            #db_session.commit()
+            #db_session.update(req, synchronize_session=False)
+            #save_request(req, form)
+            #db_session.flush()
             flash('Environment Request updated successfully!')
             return redirect('/')
         return render_template('edit_request.html', form=form)
@@ -135,7 +197,8 @@ def new_request():
     return render_template('new_request.html', form=form)
 
 
-def save_request(req, form, new=False):
+def edit_request(form, new=False):
+    print "1"
     req.env = form.environment.data
     req.requestedby = form.requestedby.data
     req.version = int(str(form.swp_number.data[0]).split()[0])
@@ -151,14 +214,47 @@ def save_request(req, form, new=False):
     req.source_uat_ref = str(form.source_uat_ref.data)
     req.delivery_notification = form.delivery_notification.data 
     req.approval = False
-
+    print "2"
     if new:
         current_session=db_session.object_session(req)
         current_session.add(req)
-        current_session.commit();
+        current_session.commit()
+        current_session.close()
     else:
-        db_session.add(req);
-        db_session.commit();
+        db_session.commit()
+
+if __name__ == '__main__':
+    app.run()
+
+
+
+def save_request(req, form, new=False):
+    print "1"
+    req.env = form.environment.data
+    req.requestedby = form.requestedby.data
+    req.version = int(str(form.swp_number.data[0]).split()[0])
+    req.swp_number = int(str(form.swp_number.data[0]).split()[1])
+    req.start_date = form.start_date.data
+    req.delivery_date = form.delivery_date.data
+    req.backup_db = form.backup_db.data
+    req.keep_data = form.keep_data.data
+    req.keep_ld = form.keep_ld.data
+    req.osb_integration = form.osb_integration.data
+    req.ods_integration = form.ods_integration.data
+    req.oss_integration = form.oss_integration.data                        
+    req.source_uat_ref = str(form.source_uat_ref.data)
+    req.delivery_notification = form.delivery_notification.data 
+    req.approval = False
+    print "2"
+    if new:
+        current_session=db_session.object_session(req)
+        current_session.add(req)
+        current_session.commit()
+    else:
+        print "3"
+
+        db_session.add(req)
+        db_session.commit()
 
 if __name__ == '__main__':
     app.run()
