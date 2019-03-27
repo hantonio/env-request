@@ -5,7 +5,7 @@ from wtforms.fields.html5 import EmailField
 from flask_security import LoginForm
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from models import Environment, Version, SwpNumber, OsbIntegration, OdsIntegration, OssIntegration
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, NumberRange
 import wtforms_json
 
 wtforms_json.init()
@@ -19,7 +19,7 @@ class RequestSearchForm(Form):
 	choices = [('Environment Number', 'Environment Number'),
 				('Version', 'Version')]
 	select = SelectField('Search for request:', choices=choices, render_kw={"class": "form-control"})
-	search = StringField('', render_kw={"class": "form-control"})
+	search = IntegerField('', render_kw={"class": "form-control"}, validators=[NumberRange(min=0, max=9999)])
 
 def envreq_choices():
 	return Environment.query
