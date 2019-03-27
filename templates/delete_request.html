@@ -16,7 +16,7 @@
 <h2>Delete Request</h2>
 
 {% from "_formhelpers.html" import render_field, render_datefield %}
-<form method=post>
+<form id="delete_form" method=post>
   <dl>
     {{ render_field(form.environment) }}
     {{ render_field(form.requestedby) }}
@@ -34,7 +34,7 @@
     {{ render_field(form.source_uat_ref) }}   
     {{ render_field(form.delivery_notification) }}    
   </dl>
-  <p><input type=submit value=Delete></p>
+  <p><input class="btn btn-danger" id='delete_btn' type=submit value=Delete></p>
 </form>
 </div>
 {% endblock %}
@@ -73,5 +73,50 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
 $(function() {
   $('#selectswp').filterByText($('#versionbox'), true);
 }); 
+</script>
+<script>
+$(function() {
+   $('#ods_integration').val('{{ form.ods_integration.data|safe }}');
+ }
+);
+$(function() {
+    $('#osb_integration option').filter(function() {
+    return $(this).text() == '{{ form.osb_integration.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#environment option').filter(function() {
+    return $(this).text() == '{{ form.environment.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#selectswp option').filter(function() {
+    return $(this).text() == '{{ form.swp_number.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#source_uat_ref option').filter(function() {
+    return $(this).text() == '{{ form.source_uat_ref.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+{% if form.keep_ld.data == True %}
+$('#keep_ld').attr("checked", 'true');
+{% endif %}
+{% if form.keep_data.data == True %}
+$('#keep_data').attr("checked", 'true');
+{% endif %}
+{% if form.backup_db.data == True %}
+$('#backup_db').attr("checked", 'true');
+{% endif %}
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#delete_form :input").attr("readonly", true); 
+        $('#delete_btn').removeAttr("readonly");
+    });
 </script>
 {% endblock %}

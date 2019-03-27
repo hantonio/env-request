@@ -3,6 +3,7 @@
 from app import db
 from app import admin
 from flask_admin.contrib.sqla import ModelView
+from wtforms.ext.sqlalchemy.orm import model_form
 from flask_security import RoleMixin, UserMixin, current_user
 from wtforms.fields import PasswordField
 
@@ -19,169 +20,176 @@ envs_requests = db.Table(
 )
 
 versions_swps = db.Table(
-	'versions_swps',
-	db.Column('version_id', db.Integer(), db.ForeignKey('version.id')),
-	db.Column('swp_id', db.Integer(), db.ForeignKey('swpnumber.id'))
+    'versions_swps',
+    db.Column('version_id', db.Integer(), db.ForeignKey('version.id')),
+    db.Column('swp_id', db.Integer(), db.ForeignKey('swpnumber.id'))
 )
 
 
 class Version(db.Model):
-	""""""
-	__tablename__ = "version"
-	id = db.Column(db.Integer(), primary_key=True)
-	version_number = db.Column(db.Integer())
+    """"""
+    __tablename__ = "version"
+    id = db.Column(db.Integer(), primary_key=True)
+    version_number = db.Column(db.Integer())
 
-	def __repr__(self):
-		return "{}".format(self.version_number)
+    def __repr__(self):
+        return "{}".format(self.id)
+
+    def __str__(self):
+        return "{}".format(self.version_number)
 
 admin.add_view(ModelView(Version, db.session))
 
 
 class SwpNumber(db.Model):
-	""""""
-	__tablename__ = "swpnumber"
-	id = db.Column(db.Integer(), primary_key=True)
-	version_id = db.Column(db.Integer(), db.ForeignKey("version.id"))
-	version = db.relationship("Version", backref=db.backref("version"), order_by=id, lazy=True)
-	number= db.Column(db.Integer)
+    """"""
+    __tablename__ = "swpnumber"
+    id = db.Column(db.Integer(), primary_key=True)
+    version_id = db.Column(db.Integer(), db.ForeignKey("version.id"))
+    version = db.relationship("Version", backref=db.backref("version"), order_by=id, lazy=True)
+    number= db.Column(db.Integer)
 
-	def __repr__(self):
-		return "{} {}".format(self.version, self.number)
+    def __repr__(self):
+        return "{}".format(self.id)
 
-	def __str__(self):
-		return "{} {}".format(self.version, self.number)
+    def __str__(self):
+        return "{} {}".format(self.version, self.number)
 
 admin.add_view(ModelView(SwpNumber, db.session))
 
 
 class DevelopmentPhase(db.Model):
-	""""""
-	__tablename__ = "developmentphase"
-	id = db.Column(db.Integer(), primary_key=True)
-	phase = db.Column(db.String(3))
+    """"""
+    __tablename__ = "developmentphase"
+    id = db.Column(db.Integer(), primary_key=True)
+    phase = db.Column(db.String(3))
 
-	def __repr__(self):
-		return "{}".format(self.phase)
+    def __repr__(self):
+        return "{}".format(self.id)
+
+    def __str__(self):
+        return "{}".format(self.phase)
 
 admin.add_view(ModelView(DevelopmentPhase, db.session))
 
 
 class Environment(db.Model):
-	""""""
-	__tablename__ = "environment"
-	id = db.Column(db.Integer(), primary_key=True)
-	phase_id = db.Column(db.Integer(), db.ForeignKey("developmentphase.id"))
-	phase = db.relationship("DevelopmentPhase", backref=db.backref("developmentphase"), order_by=id, lazy=True)
-	number = db.Column(db.Integer())
+    """"""
+    __tablename__ = "environment"
+    id = db.Column(db.Integer(), primary_key=True)
+    phase_id = db.Column(db.Integer(), db.ForeignKey("developmentphase.id"))
+    phase = db.relationship("DevelopmentPhase", backref=db.backref("developmentphase"), order_by=id, lazy=True)
+    number = db.Column(db.Integer())
 
-	def __repr__(self):
-		#return "{} {}".format(self.phase, self.number)
-		return "{}".format(self.id)
+    def __repr__(self):
+        #return "{} {}".format(self.phase, self.number)
+        return "{}".format(self.id)
 
-	def __str__(self):
-		return "{} {}".format(self.phase, self.number)
-		#return "{}".format(self.id)
+    def __str__(self):
+        return "{} {}".format(self.phase, self.number)
+        #return "{}".format(self.id)
 
 admin.add_view(ModelView(Environment, db.session))
 
 
 class OsbIntegration(db.Model):
-	__tablename__ = "osb_integration"
-	id = db.Column(db.Integer(), primary_key=True)
-	osbstack = db.Column(db.String(20), unique=True)
-	osbstack_ip = db.Column(db.String(20))
+    __tablename__ = "osb_integration"
+    id = db.Column(db.Integer(), primary_key=True)
+    osbstack = db.Column(db.String(20), unique=True)
+    osbstack_ip = db.Column(db.String(20))
 
-	def __repr__(self):
-		return "{}".format(self.osbstack)
+    def __repr__(self):
+        return "{}".format(self.id)
 
-	def __str__(self):
-		return "{}".format(self.id)
+    def __str__(self):
+        return "{}".format(self.osbstack)
 
 admin.add_view(ModelView(OsbIntegration, db.session))
 
 
 class OdsIntegration(db.Model):
-	__tablename__ = "ods_integration"
-	id = db.Column(db.Integer(), primary_key=True)
-	odsnumber = db.Column(db.Integer(), unique=True)
+    __tablename__ = "ods_integration"
+    id = db.Column(db.Integer(), primary_key=True)
+    odsnumber = db.Column(db.Integer(), unique=True)
 
-	def __repr__(self):
-		return "{}".format(self.odsnumber)
+    def __repr__(self):
+        return "{}".format(self.id)
 
-	def __str__(self):
-		return "{}".format(self.id)
+    def __str__(self):
+        return "{}".format(self.odsnumber)
 
 admin.add_view(ModelView(OdsIntegration, db.session))
 
 
 class OssIntegration(db.Model):
-	__tablename__ = "oss_integration"
-	id = db.Column(db.Integer(), primary_key=True)
-	ossnumber = db.Column(db.Integer(), unique=True)
-	ossworkaccount = db.Column(db.String(20))
-	osshost = db.Column(db.String(20))
+    __tablename__ = "oss_integration"
+    id = db.Column(db.Integer(), primary_key=True)
+    ossnumber = db.Column(db.Integer(), unique=True)
+    ossworkaccount = db.Column(db.String(20))
+    osshost = db.Column(db.String(20))
 
-	def __repr__(self):
-		return "{}".format(self.ossnumber)
+    def __repr__(self):
+        return "{}".format(self.id)
 
-	def __str__(self):
-		return "{}".format(self.id)
+    def __str__(self):
+        return "{}".format(self.ossnumber)
 
 admin.add_view(ModelView(OssIntegration, db.session))
 
 
 class EnvironmentRequest(db.Model):
-	""""""
-	__tablename__ = "request"
+    """"""
+    __tablename__ = "request"
 
-	id = db.Column(db.Integer(), primary_key=True)
-	env_id = db.Column(db.Integer(), db.ForeignKey("environment.id"))
-	env = db.relationship("Environment", backref=db.backref("environment"), order_by=id, lazy=True)
-	requestedby = db.Column(db.String(20))
-	approval = db.Column(db.Boolean())
-	status = db.Column(db.String(10))
-	zones = db.Column(db.Integer())
-	version = db.Column(db.Integer())
-	swp_number = db.Column(db.Integer())
-	start_date = db.Column(db.String())
-	delivery_date = db.Column(db.String())
-	backup_db = db.Column(db.Boolean())
-	keep_data = db.Column(db.Boolean())
-	keep_ld = db.Column(db.Boolean())
-	osb_id = db.Column(db.Integer(), db.ForeignKey("osb_integration.id"))
-	osb_integration = db.relationship("OsbIntegration", backref=db.backref("osb_integration"), order_by=id, post_update=True, lazy='selectin')
-	ods_id = db.Column(db.Integer(), db.ForeignKey("ods_integration.id"))
-	ods_integration = db.relationship("OdsIntegration", backref=db.backref("ods_integration"), order_by=id, post_update=True, lazy='selectin')
-	oss_id = db.Column(db.Integer(), db.ForeignKey("oss_integration.id"))	
-	oss_integration = db.relationship("OssIntegration", backref=db.backref("oss_integration"), order_by=id, post_update=True, lazy='selectin')
-	source_uat_ref = db.Column(db.String(10), nullable=True)
-	delivery_notification = db.Column(db.String(300))
+    id = db.Column(db.Integer(), primary_key=True)
+    environment_id = db.Column(db.Integer(), db.ForeignKey("environment.id"))
+    environment = db.relationship("Environment", backref=db.backref("environment"), order_by=id, lazy=True)
+    requestedby = db.Column(db.String(20))
+    approval = db.Column(db.Boolean())
+    status = db.Column(db.String(10))
+    zones = db.Column(db.Integer())
+    version = db.Column(db.Integer())
+    swp_number_id = db.Column(db.Integer(), db.ForeignKey("swpnumber.id"))
+    swp_number = db.relationship("SwpNumber", backref=db.backref("swpnumber"), order_by=id, lazy=True)
+    start_date = db.Column(db.String())
+    delivery_date = db.Column(db.String())
+    backup_db = db.Column(db.Boolean())
+    keep_data = db.Column(db.Boolean())
+    keep_ld = db.Column(db.Boolean())
+    osb_id = db.Column(db.Integer(), db.ForeignKey("osb_integration.id"))
+    osb_integration = db.relationship("OsbIntegration", backref=db.backref("osb_integration"), order_by=id, lazy=True)
+    ods_id = db.Column(db.Integer(), db.ForeignKey("ods_integration.id"))
+    ods_integration = db.relationship("OdsIntegration", backref=db.backref("ods_integration"), order_by=id, lazy=True)
+    oss_id = db.Column(db.Integer(), db.ForeignKey("oss_integration.id"))   
+    oss_integration = db.relationship("OssIntegration", backref=db.backref("oss_integration"), order_by=id, lazy=True)
+    source_uat_ref = db.Column(db.String(10), nullable=True)
+    delivery_notification = db.Column(db.String(300))
 
 admin.add_view(ModelView(EnvironmentRequest, db.session))
 
 
 class Role(db.Model, RoleMixin):
-	id = db.Column(db.Integer(), primary_key=True)
-	name = db.Column(db.String(80), unique=True)
-	description = db.Column(db.String(255))
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
 
-	def __str__(self):
-		return self.name
+    def __str__(self):
+        return self.name
 
-	def __hash__(self):
-		return hash(self.name)
+    def __hash__(self):
+        return hash(self.name)
 
 
 class User(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
-	first_name = db.Column(db.String(100))
-	last_name = db.Column(db.String(100))
-	login = db.Column(db.String(80), unique=True)
-	email = db.Column(db.String(120))
-	password = db.Column(db.String(64))
-	active = db.Column(db.Boolean())
-	confirmed_at = db.Column(db.DateTime())
-	roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
+    login = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120))
+    password = db.Column(db.String(64))
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
 # Customized User model for SQL-Admin
 class UserAdmin(ModelView):
@@ -229,7 +237,7 @@ class RoleAdmin(ModelView):
 
     # Prevent administration of Roles unless the currently logged-in user has the "admin" role
     def is_accessible(self):
-		return current_user.has_role('admin')
+        return current_user.has_role('admin')
 
-admin.add_view(RoleAdmin(Role, db.session))	
+admin.add_view(RoleAdmin(Role, db.session)) 
 admin.add_view(UserAdmin(User, db.session))

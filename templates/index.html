@@ -6,9 +6,12 @@
 <div class="container">
 <h2>Environment Request</h2>
 <p><p>
-<a href="{{ url_for('.new_request') }}">New Request</a>
+<a href="{{ url_for('.new_request') }}" class="btn btn-primary" role="button">
+New Request
+</a>
 
 {% with messages = get_flashed_messages() %}
+<div class="alert alert-info">
 	{% if messages %}
 		<ul class=flashes>
 		{% for message in messages %}
@@ -16,6 +19,7 @@
 		{% endfor %}
 		</ul>
 	{% endif %}
+</div>
 {% endwith %}
 
 {% from "_formhelpers.html" import render_field %}
@@ -24,7 +28,7 @@
 		{{ render_field(form.select) }}
 		{{ render_field(form.search) }}
 	</dl>
-	<p><input type=submit value=Search></p>
+	<p><input class="btn btn-success" type="submit" value="Search"></p>
 </form>
 </div>
 

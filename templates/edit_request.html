@@ -34,13 +34,12 @@
     {{ render_field(form.source_uat_ref) }}   
     {{ render_field(form.delivery_notification) }}    
   </dl>
-  <p><input type=submit value=Submit></p>
+  <p><input class="btn btn-success" type=submit value=Submit></p>
 </form>
 </div>
 {% endblock %}
 
 {% block scripts %}
-
 <script>
 jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
   return this.each(function() {
@@ -73,5 +72,44 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
 $(function() {
   $('#selectswp').filterByText($('#versionbox'), true);
 }); 
+</script>
+<script>
+$(function() {
+   $('#ods_integration').val('{{ form.ods_integration.data|safe }}');
+ }
+);
+$(function() {
+    $('#osb_integration option').filter(function() {
+    return $(this).text() == '{{ form.osb_integration.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#environment option').filter(function() {
+    return $(this).text() == '{{ form.environment.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#selectswp option').filter(function() {
+    return $(this).text() == '{{ form.swp_number.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#source_uat_ref option').filter(function() {
+    return $(this).text() == '{{ form.source_uat_ref.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+{% if form.keep_ld.data == True %}
+$('#keep_ld').attr("checked", 'true');
+{% endif %}
+{% if form.keep_data.data == True %}
+$('#keep_data').attr("checked", 'true');
+{% endif %}
+{% if form.backup_db.data == True %}
+$('#backup_db').attr("checked", 'true');
+{% endif %}
 </script>
 {% endblock %}

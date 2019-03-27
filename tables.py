@@ -1,10 +1,11 @@
 # tables.py
 
-from flask_table import Table, Col, LinkCol
+from flask_table import Table, Col, LinkCol, ButtonCol
 
 class Results(Table):
+	classes = ['table', 'table-stripped', 'table-hover', 'table-condensed']
 	id = Col('ID', show=False)
-	env = Col('Environment')
+	environment = Col('Environment')
 	requestedby = Col('Requested By')
 	version = Col('Version')
 	swp_number = Col('SWP Number')
@@ -18,5 +19,5 @@ class Results(Table):
 	oss_integration = Col('OSS Integration')
 	source_uat_ref = Col('Source UAT REF')
 	delivery_notification = Col('Delivery Notification to')
-	edit = LinkCol('Edit', 'edit_req', url_kwargs=dict(id='id'))
-	delete = LinkCol('Delete', 'delete_req', url_kwargs=dict(id='id'))
+	edit = LinkCol('Edit', 'edit_req', url_kwargs=dict(id='id'), anchor_attrs={'class' : 'btn btn-warning'})
+	delete = LinkCol('Delete', 'delete_req', url_kwargs=dict(id='id'), anchor_attrs={'class' : 'btn btn-danger'})
