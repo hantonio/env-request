@@ -87,23 +87,15 @@ def search_results(search):
 @app.route('/request/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_req(id):
-    #with db_session.no_autoflush:
     req = db_session.query(EnvironmentRequest).filter(EnvironmentRequest.id==id).first()
-    req_dict = req.__dict__
 
-    print req_dict  
-    
     if req:
-        #form = EnvironmentRequestForm(formdata=request.form).from_json(req_dict)
-        #print form.data
-        #form.process(formdata=request.form, obj=req)
         form = EnvironmentRequestForm(formdata=request.form, obj=req)
         
         if request.method == 'GET':
             form.keep_data.data = req.keep_data
             form.keep_ld.data = req.keep_ld
             form.backup_db.data = req.backup_db
-
 
         if request.method == 'POST' and form.validate():
             _ = req.environment_id
@@ -130,6 +122,7 @@ def edit_req(id):
             req.environment = form.environment.data
             req.requestedby = form.requestedby.data
             req.swp_number = form.swp_number.data
+            req.zones = form.zones.data
             req.version = str(form.swp_number.data).split()[0]
             req.start_date = form.start_date.data
             req.delivery_date = str(form.delivery_date.data)
@@ -199,6 +192,7 @@ def save_request(req, form, new=False):
     req.requestedby = form.requestedby.data
     req.swp_number = form.swp_number.data
     req.version = str(form.swp_number.data).split()[0]
+    req.zones = form.zones.data    
     req.start_date = form.start_date.data
     req.delivery_date = form.delivery_date.data
     req.backup_db = form.backup_db.data

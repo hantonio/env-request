@@ -9,6 +9,7 @@ class Results(Table):
 	requestedby = Col('Requested By')
 	version = Col('Version')
 	swp_number = Col('SWP Number')
+	zones = Col('# Zones')
 	start_date = Col('Start Date')
 	delivery_date = Col('Delivery Date')
 	backup_db = Col('Backup Database?')

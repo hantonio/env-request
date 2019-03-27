@@ -44,6 +44,7 @@ class EnvironmentRequestForm(Form):
 	requestedby = StringField('Requested By:', render_kw={"class": "form-control"}, validators=[InputRequired()])
 	version = StringField('Search for a Version', id="versionbox", render_kw={"class": "form-control"})
 	swp_number = QuerySelectField('Choose a Version and SWP Number', query_factory=swpnumber_choices, allow_blank=False, get_pk=lambda x: x.id, id="selectswp", render_kw={"class": "form-control"}, validators=[InputRequired()])
+	zones = SelectField("# Zones", id="zones", render_kw={"class": "form-control"}, choices=[('1', '1'), ('2', '2'), ('4', '4')])
 	start_date = StringField('Start Date', render_kw={"class": "form-control"}, validators=[InputRequired()])
 	delivery_date = StringField('Delivery Date', render_kw={"class": "form-control"}, validators=[InputRequired()])
 	backup_db = BooleanField('Backup Database?', render_kw={"class": "checkbox"}, false_values=(False, 'false', 0, '0'))
