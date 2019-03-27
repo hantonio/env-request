@@ -76,8 +76,16 @@ $(function() {
 </script>
 <script>
 $(function() {
-   $('#ods_integration').val('{{ form.ods_integration.data|safe }}');
- }
+    $('#oss_integration option').filter(function() {
+    return $(this).text() == '{{ form.oss_integration.data|safe }}';
+  }).attr('selected', true);
+  }
+);
+$(function() {
+    $('#ods_integration option').filter(function() {
+    return $(this).text() == '{{ form.ods_integration.data|safe }}';
+  }).attr('selected', true);
+  }
 );
 $(function() {
     $('#osb_integration option').filter(function() {
