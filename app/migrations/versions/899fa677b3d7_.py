@@ -1,8 +1,8 @@
-"""First migration
+"""empty message
 
-Revision ID: a04ada3ff3d2
+Revision ID: 899fa677b3d7
 Revises: 
-Create Date: 2019-03-25 18:36:53.342864
+Create Date: 2019-03-28 19:07:08.721602
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a04ada3ff3d2'
+revision = '899fa677b3d7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,7 +57,7 @@ def upgrade():
     sa.Column('last_name', sa.String(length=100), nullable=True),
     sa.Column('login', sa.String(length=80), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
-    sa.Column('password', sa.String(length=64), nullable=True),
+    sa.Column('password', sa.String(length=300), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('confirmed_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -90,15 +90,15 @@ def upgrade():
     )
     op.create_table('request',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('env_id', sa.Integer(), nullable=True),
+    sa.Column('environment_id', sa.Integer(), nullable=True),
     sa.Column('requestedby', sa.String(length=20), nullable=True),
     sa.Column('approval', sa.Boolean(), nullable=True),
     sa.Column('status', sa.String(length=10), nullable=True),
     sa.Column('zones', sa.Integer(), nullable=True),
     sa.Column('version', sa.Integer(), nullable=True),
     sa.Column('swp_number_id', sa.Integer(), nullable=True),
-    sa.Column('start_date', sa.String(), nullable=True),
-    sa.Column('delivery_date', sa.String(), nullable=True),
+    sa.Column('start_date', sa.String(length=50), nullable=True),
+    sa.Column('delivery_date', sa.String(length=50), nullable=True),
     sa.Column('backup_db', sa.Boolean(), nullable=True),
     sa.Column('keep_data', sa.Boolean(), nullable=True),
     sa.Column('keep_ld', sa.Boolean(), nullable=True),
@@ -107,7 +107,7 @@ def upgrade():
     sa.Column('oss_id', sa.Integer(), nullable=True),
     sa.Column('source_uat_ref', sa.String(length=10), nullable=True),
     sa.Column('delivery_notification', sa.String(length=300), nullable=True),
-    sa.ForeignKeyConstraint(['env_id'], ['environment.id'], ),
+    sa.ForeignKeyConstraint(['environment_id'], ['environment.id'], ),
     sa.ForeignKeyConstraint(['ods_id'], ['ods_integration.id'], ),
     sa.ForeignKeyConstraint(['osb_id'], ['osb_integration.id'], ),
     sa.ForeignKeyConstraint(['oss_id'], ['oss_integration.id'], ),
