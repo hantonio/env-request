@@ -8,7 +8,7 @@ export DB_HOST=<mysql_host>
 export DB_PORT=<mysql_port>
 export DB_INSTANCE=<mysql_instance>
 export DB_USER=<mysql_user>
-export DB_PASSWORD=<mysql_user>
+export DB_PASSWORD=<mysql_password>
 ```
 ### Create database migration after model changes
 
